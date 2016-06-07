@@ -157,8 +157,8 @@ class TestFields(unittest.TestCase):
         stream.write(content)
         # rewind before inserting
         stream.seek(0)
-        
-        
+
+
         db = DAL(DEFAULT_URI, check_reserved=['all'])
         db.define_table('tt', Field('fileobj', 'upload',
                                     uploadfolder=tempfile.gettempdir(),
@@ -182,7 +182,7 @@ class TestFields(unittest.TestCase):
 
         # drop
         db.tt.drop()
-        
+
         # this part is triggered only if fs (AKA pyfilesystem) module is installed
         try:
             from fs.memoryfs import MemoryFS
@@ -243,7 +243,13 @@ class TestFields(unittest.TestCase):
         db.tt.drop()
         db.define_table('tt', Field('aa', 'boolean', default=True))
         self.assertEqual(db.tt.insert(aa=True), 1)
+        self.assertEqual(db.tt.insert(aa=False), 2)
+        print(db._adapter.dialect)
+        print(db._adapter.parser)
         self.assertEqual(db().select(db.tt.aa)[0].aa, True)
+        print(db.executesql(db._lastsql[0]))
+        self.assertEqual(db().select(db.tt.aa)[1].aa, False)
+        print(db.executesql(db._lastsql[0]))
         db.tt.drop()
         db.define_table('tt', Field('aa', 'json', default={}))
         # test different python objects for correct serialization in json

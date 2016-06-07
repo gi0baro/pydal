@@ -317,6 +317,7 @@ class TestFields(unittest.TestCase):
             ('double', 3.1, 1),
             ('integer', 3, 1),
             ('boolean', True, True),
+            ('boolean', False, True),
             ('date', datetime.date.today(), datetime.date.today()),
             ('datetime', datetime.datetime(1971, 12, 21, 10, 30, 55, 0),
                 datetime_datetime_today),
