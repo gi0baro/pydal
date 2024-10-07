@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import base64
-import cgi
 import copy
 import csv
 import datetime
@@ -1661,7 +1660,7 @@ class Field(Expression, Serializable):
         filename = "{}".format(filename)
         if self.custom_store:
             return self.custom_store(file, filename, path)
-        if isinstance(file, cgi.FieldStorage):
+        if hasattr(file, "file"):
             filename = filename or file.filename
             file = file.file
         elif not filename:
