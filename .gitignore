@@ -20,4 +20,4 @@ build/*
 .settings
 .idea
 .vslick
-
+uv.lock
