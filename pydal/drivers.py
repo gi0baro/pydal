@@ -49,6 +49,13 @@ else:
         psycopg2_adapt = None
 
     try:
+        import psycopg
+        from psycopg.sql import quote as psycopg3_adapt
+        DRIVERS['psycopg3'] = psycopg
+    except ImportError:
+        psycopg3_adapt = None
+
+    try:
         import pg8000
         DRIVERS['pg8000'] = pg8000
     except ImportError:

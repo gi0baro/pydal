@@ -1,7 +1,7 @@
 import re
 from .._compat import PY2, with_metaclass, iterkeys, to_unicode, long
 from .._globals import IDENTITY, THREAD_LOCAL
-from ..drivers import psycopg2_adapt
+from ..drivers import psycopg2_adapt, psycopg3_adapt
 from ..helpers.classes import ConnectionConfigurationMixin
 from .base import SQLAdapter
 from . import AdapterMeta, adapters, with_connection, with_connection_or_raise
@@ -30,7 +30,7 @@ class Postgre(
     with_metaclass(PostgreMeta, ConnectionConfigurationMixin, SQLAdapter)
 ):
     dbengine = 'postgres'
-    drivers = ('psycopg2', 'pg8000')
+    drivers = ('psycopg2', 'psycopg3', 'pg8000')
     support_distributed_transaction = True
 
     REGEX_URI = re.compile(
@@ -165,6 +165,18 @@ class PostgrePsyco(Postgre):
             if isinstance(rv, bytes):
                 return rv.decode('utf-8')
         return rv
+
+
+@adapters.register_for('postgres:psycopg3')
+class PostgrePsyco3(Postgre):
+    drivers = ('psycopg3',)
+
+    def _config_json(self):
+        self.dialect = self._get_json_dialect()(self)
+        self.parser = self._get_json_parser()(self)
+
+    def adapt(self, obj):
+        return psycopg3_adapt(obj)
 
 
 @adapters.register_for('postgres:pg8000')
