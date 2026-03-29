@@ -76,6 +76,9 @@ class Postgre(
             self.driver_args['sslmode'] = sslmode
         # choose diver according uri
         if self.driver:
+            if self.driver.__name__ == 'psycopg' and self.driver.__version__.startswith('3'):
+                self.driver_args['dbname'] = self.driver_args.pop('database')
+
             self.__version__ = "%s %s" % (self.driver.__name__,
                                           self.driver.__version__)
         else:
